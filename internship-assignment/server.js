@@ -1,25 +1,11 @@
 const express = require('express');
 const app = express();
-const port = 3000;
+
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-let items = [
-  { id: '1', name: 'Item 1', comments: [] },
-  { id: '2', name: 'Item 2', comments: [] }
-];
-
-app.post('/items/:id/comments', (req, res) => {
-  const id = req.params.id;
-  const comment = req.body.comment;
-  const item = items.find(item => item.id === id);
-  if (item) {
-    item.comments.push(comment);
-    res.status(201).send(comment);
-  } else {
-    res.status(404).send({ message: 'Item not found' });
-  }
-});
+let items = [];
 
 // Admin login (mock, no actual authentication)
 app.post('/admin/login', (req, res) => {
@@ -61,8 +47,20 @@ app.get('/items/:id', (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running at http://localhost:${port}`);
+app.post('/items/:id/comments', (req, res) => {
+  const id = req.params.id;
+  const comment = req.body.comment;
+  const item = items.find(item => item.id === id);
+  if (item) {
+    item.comments.push(comment);
+    res.status(201).send(comment);
+  } else {
+    res.status(404).send({ message: 'Item not found' });
+  }
 });
 
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
 
+module.exports = app;
